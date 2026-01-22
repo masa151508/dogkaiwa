@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>おしゃべりワンコ AI</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- External CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-[#d4a373] text-white p-4 shadow-md flex justify-between items-center">
+        <h1 class="text-xl font-bold">🐾 おしゃべりワンコ</h1>
+        <button id="reset-btn" class="text-sm bg-[#bc6c25] px-3 py-1 rounded hover:bg-[#a65d20] transition">最初から</button>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1 overflow-hidden flex flex-col max-w-2xl mx-auto w-full bg-white shadow-inner relative">
+        
+        <!-- Error Toast -->
+        <div id="error-toast" class="hidden absolute top-4 left-1/2 -translate-x-1/2 z-50 bg-red-500 text-white px-6 py-2 rounded-full shadow-lg text-sm">
+            エラーが発生しました。もう一度試してみてね！
+        </div>
+
+        <!-- Setup Screen -->
+        <div id="setup-screen" class="p-8 flex flex-col items-center justify-center space-y-6 h-full text-center">
+            <div id="static-dog-preview" class="w-48 h-48 bg-[#f1f8e9] rounded-full flex items-center justify-center shadow-inner border-4 border-[#ccd5ae]">
+                <svg viewBox="0 0 24 24" class="w-32 h-32 text-[#606c38]" fill="currentColor">
+                    <path d="M12,7C13.1,7 14,7.9 14,9C14,10.1 13.1,11 12,11C10.9,11 10,10.1 10,9C10,7.9 10.9,7 12,7M12,3C13.25,3 14.41,3.35 15.41,3.95L15.42,3.96L15.44,3.97C16.32,4.5 17.07,5.25 17.6,6.13L17.61,6.15C18,6.8 18.3,7.5 18.44,8.28C19.8,8.5 21,9.4 21.64,10.63C22.25,11.85 22.25,13.3 21.6,14.5C21,15.66 19.85,16.5 18.5,16.75C18.25,18.5 17.5,20.13 16.3,21.3C15.13,22.47 13.57,23.13 11.9,23.13C10.23,23.13 8.67,22.47 7.5,21.3C6.3,20.13 5.5,18.5 5.25,16.75C3.9,16.5 2.75,15.66 2.15,14.5C1.5,13.3 1.5,11.85 2.11,10.63C2.75,9.4 3.95,8.5 5.31,8.28C5.45,7.5 5.75,6.8 6.14,6.15L6.15,6.13C6.68,5.25 7.43,4.5 8.31,3.97L8.33,3.96L8.34,3.95C9.34,3.35 10.5,3 11.75,3H12M12,5C9.79,5 8,6.79 8,9C8,11.21 9.79,13 12,13C14.21,13 16,11.21 16,9C16,6.79 14.21,5 12,5M18.13,10.13C17.6,10.13 17.13,10.6 17.13,11.13V13.63C17.13,14.16 17.6,14.63 18.13,14.63C18.66,14.63 19.13,14.16 19.13,13.63V11.13C19.13,10.6 18.66,10.13 18.13,10.13M5.63,10.13C5.1,10.13 4.63,10.6 4.63,11.13V13.63C4.63,14.16 5.1,14.63 5.63,14.63C6.16,14.63 6.63,14.16 6.63,13.63V11.13C6.63,10.6 6.16,10.13 5.63,10.13Z" />
+                </svg>
+            </div>
+            <h2 class="text-2xl font-bold text-[#606c38]">おしゃべりワンコが待ってるよ！</h2>
+            <p class="text-gray-600">あなたの名前や、今日あったことを教えてね。</p>
+            <button id="start-chat-btn" class="w-full max-w-xs bg-[#bc6c25] text-white font-bold py-4 rounded-xl hover:bg-[#a65d20] transition shadow-lg">
+                お話しをはじめる
+            </button>
+        </div>
+
+        <!-- Chat Screen -->
+        <div id="chat-screen" class="hidden flex-col h-full overflow-hidden">
+            <!-- Dog Profile -->
+            <div class="p-4 border-b bg-[#f1f8e9] flex items-center space-x-4">
+                <div class="w-16 h-16 rounded-full overflow-hidden border-4 border-white shadow-md bg-[#ccd5ae] flex items-center justify-center flex-shrink-0">
+                    <svg viewBox="0 0 24 24" class="w-10 h-10 text-[#606c38]" fill="currentColor">
+                        <path d="M12,7C13.1,7 14,7.9 14,9C14,10.1 13.1,11 12,11C10.9,11 10,10.1 10,9C10,7.9 10.9,7 12,7M12,3C13.25,3 14.41,3.35 15.41,3.95L15.42,3.96L15.44,3.97C16.32,4.5 17.07,5.25 17.6,6.13L17.61,6.15C18,6.8 18.3,7.5 18.44,8.28C19.8,8.5 21,9.4 21.64,10.63C22.25,11.85 22.25,13.3 21.6,14.5C21,15.66 19.85,16.5 18.5,16.75C18.25,18.5 17.5,20.13 16.3,21.3C15.13,22.47 13.57,23.13 11.9,23.13C10.23,23.13 8.67,22.47 7.5,21.3C6.3,20.13 5.5,18.5 5.25,16.75C3.9,16.5 2.75,15.66 2.15,14.5C1.5,13.3 1.5,11.85 2.11,10.63C2.75,9.4 3.95,8.5 5.31,8.28C5.45,7.5 5.75,6.8 6.14,6.15L6.15,6.13C6.68,5.25 7.43,4.5 8.31,3.97L8.33,3.96L8.34,3.95C9.34,3.35 10.5,3 11.75,3H12M12,5C9.79,5 8,6.79 8,9C8,11.21 9.79,13 12,13C14.21,13 16,11.21 16,9C16,6.79 14.21,5 12,5M18.13,10.13C17.6,10.13 17.13,10.6 17.13,11.13V13.63C17.13,14.16 17.6,14.63 18.13,14.63C18.66,14.63 19.13,14.16 19.13,13.63V11.13C19.13,10.6 18.66,10.13 18.13,10.13M5.63,10.13C5.1,10.13 4.63,10.6 4.63,11.13V13.63C4.63,14.16 5.1,14.63 5.63,14.63C6.16,14.63 6.63,14.16 6.63,13.63V11.13C6.63,10.6 6.16,10.13 5.63,10.13Z" />
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="font-bold text-lg text-[#283618]">おしゃべりワンコ</h3>
+                    <p class="text-sm text-green-600 flex items-center">
+                        <span class="w-2 h-2 bg-green-500 rounded-full mr-2"></span>オンライン
+                    </p>
+                </div>
+            </div>
+
+            <!-- Messages Area -->
+            <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-4 bg-[#fefae0]"></div>
+
+            <!-- Loading Indicator -->
+            <div id="typing-indicator" class="hidden px-6 py-2">
+                <div class="loading-dots flex space-x-1 items-center text-gray-400 text-xs">
+                    <div class="w-1.5 h-1.5 bg-gray-400 rounded-full"></div>
+                    <div class="w-1.5 h-1.5 bg-gray-400 rounded-full"></div>
+                    <div class="w-1.5 h-1.5 bg-gray-400 rounded-full"></div>
+                    <span class="ml-2 italic">くんくん... ワン！</span>
+                </div>
+            </div>
+
+            <!-- Input Area -->
+            <div class="p-4 bg-white border-t">
+                <div class="flex space-x-2">
+                    <input type="text" id="user-input" placeholder="なにか話しかけてみて..." 
+                        class="flex-1 p-3 border rounded-full focus:outline-none focus:ring-2 focus:ring-[#d4a373]">
+                    <button id="send-btn" class="bg-[#d4a373] text-white p-3 rounded-full hover:bg-[#bc6c25] transition shadow disabled:opacity-50">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- External JavaScript -->
+    <script src="script.js"></script>
+</body>
+</html>
