@@ -1,0 +1,53 @@
+@import url('https://fonts.googleapis.com/css2?family=Kiwi+Maru:wght@400;500&display=swap');
+
+body {
+    font-family: 'Kiwi Maru', serif;
+    background-color: #fefae0;
+}
+
+/* チャットの吹き出しスタイル */
+.chat-bubble {
+    border-radius: 20px;
+    position: relative;
+}
+
+.chat-bubble::after {
+    content: '';
+    position: absolute;
+    border-style: solid;
+}
+
+/* 左側（AI）の吹き出しのしっぽ */
+.bubble-left::after {
+    border-width: 10px 10px 10px 0;
+    border-color: transparent #ffffff transparent transparent;
+    left: -10px;
+    top: 15px;
+}
+
+/* 右側（ユーザー）の吹き出しのしっぽ */
+.bubble-right::after {
+    border-width: 10px 0 10px 10px;
+    border-color: transparent transparent transparent #d4a373;
+    right: -10px;
+    top: 15px;
+}
+
+/* ローディングアニメーション */
+.loading-dots div {
+    animation: bounce 0.6s infinite alternate;
+}
+
+.loading-dots div:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.loading-dots div:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes bounce {
+    to {
+        transform: translateY(-5px);
+    }
+}
